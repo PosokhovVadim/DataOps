@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: ml-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ml
+      POSTGRES_PASSWORD: ml
+      POSTGRES_DB: ml
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  ml-service:
+    build: .
+    container_name: ml-service
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ml
+      DB_USER: ml
+      DB_PASSWORD: ml
+
+volumes:
+  postgres_data:
